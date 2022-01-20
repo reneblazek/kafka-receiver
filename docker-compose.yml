@@ -1,0 +1,35 @@
+version: "3.1"
+services:
+
+  php:
+    build: .docker/php
+    container_name: ${PROJECT_NAME}-php
+    working_dir: /application
+    volumes:
+      - .:/application
+      - ./.docker/php/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
+    environment:
+      XDEBUG_MODE: debug
+      WEB_PORT: ${WEB_PORT}
+    ports:
+      - "9001:9000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: ${PROJECT_NAME}-nginx
+    working_dir: /application
+    depends_on:
+      - php
+    volumes:
+        - .:/application
+        - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        - .:/mysql/data
+    ports:
+      - "${WEB_PORT}:80"
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ${PROJECT_NAME}-mailhog
+    ports:
+      - "83:8025"
+      - "1026:1025"

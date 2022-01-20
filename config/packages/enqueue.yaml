@@ -1,0 +1,11 @@
+enqueue:
+  default:
+    transport:
+      dsn: "rdkafka://"
+      global:
+        group.id: 'kafkatest'
+        metadata.broker.list: "%env(KAFKA_BROKER_LIST)%"
+      topic:
+        auto.offset.reset: earliest
+      commit_async: true
+    client: ~
